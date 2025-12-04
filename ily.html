@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="一份特别的礼物">
+    <meta name="theme-color" content="#050810">
+    <title>给你的特别礼物</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
+          rel="stylesheet">
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💖</text></svg>">
+</head>
+<body>
+<!-- 加载动画 -->
+<div class="loading-screen" id="loadingScreen">
+    <div class="loading-content">
+        <div class="loading-heart-container">
+            <svg class="loading-heart-svg" viewBox="0 0 32 32">
+                <path d="M16 28.72a3 3 0 0 1-2.13-.88L3.57 17.54a8.23 8.23 0 0 1-2.07-8.67 8 8 0 0 1 6.72-5.3 7.49 7.49 0 0 1 5.66 1.58L16 6.86l2.12-1.71a7.49 7.49 0 0 1 5.66-1.58 8 8 0 0 1 6.72 5.3 8.23 8.23 0 0 1-2.07 8.67l-10.3 10.3a3 3 0 0 1-2.13.88z"/>
+            </svg>
+        </div>
+        <div class="loading-text">正在为你准备惊喜...</div>
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+    </div>
+</div>
+
+<!-- 背景特效层 -->
+<canvas id="starsCanvas"></canvas>
+<div class="aurora-layer">
+    <div class="aurora aurora-1"></div>
+    <div class="aurora aurora-2"></div>
+    <div class="aurora aurora-3"></div>
+</div>
+<div class="floating-particles" id="floatingParticles"></div>
+
+<!-- 音乐控制 -->
+<button class="control-btn music-btn" id="musicBtn" onclick="toggleMusic()" title="音乐">
+    <svg class="music-icon-svg" viewBox="0 0 24 24">
+        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+    </svg>
+    <span class="music-bars">
+            <span></span><span></span><span></span><span></span>
+        </span>
+</button>
+<audio id="bgMusic" loop preload="auto">
+    <source src="assets/music/bgm.mp3" type="audio/mpeg">
+</audio>
+
+<!-- 设置按钮 -->
+<button class="control-btn settings-btn" id="settingsBtn" onclick="openSettings()" title="设置">
+    <svg viewBox="0 0 24 24">
+        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+    </svg>
+</button>
+
+<!-- 主容器 -->
+<main class="main-container">
+    <!-- 阶段1：欢迎页面 -->
+    <section class="stage active" id="stage1">
+        <div class="stage-content">
+            <div class="welcome-box">
+                <h1 class="main-title">
+                    <span class="title-line gradient-text">莎莎</span>
+                    <span class="title-line">这是给你的</span>
+                    <span class="title-line gradient-text">特别信物</span>
+                </h1>
+
+                <p class="subtitle">And the sunlight clasps the earth,<br>And the moonbeams kiss the sea—<br>What are
+                    all these kissings worth, lf thou kiss not me?</p>
+
+                <button class="primary-btn glow-effect" onclick="startJourney()">
+                    <svg class="btn-icon-svg" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <span>开启礼盒</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 阶段2：内容页面 -->
+    <section class="stage" id="stage2">
+        <button class="back-btn" id="mainBackBtn" onclick="handleStage2Back()" title="返回">
+            <svg viewBox="0 0 24 24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+        </button>
+
+        <div class="stage-content content-stage">
+            <!-- 主视图：情书卡片和导航按钮 -->
+            <div class="main-view" id="mainView">
+                <div class="love-letter glass-card">
+                    <div class="letter-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                    </div>
+                    <div class="letter-content">
+                        <p>致莎莎：</p>
+                        <p>这里收藏着我的真心，</p>
+                        <p>我期待着，这里能有你的加入……</p>
+                    </div>
+                </div>
+
+                <!-- 主导航卡片行（三个卡片） -->
+                <div class="nav-cards">
+                    <div class="nav-card glass-card" onclick="showSection('story')">
+                        <div class="card-shine"></div>
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">日记</h3>
+                        <p class="card-desc">记录我们走过的足迹</p>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="nav-card glass-card" onclick="showSection('memory')">
+                        <div class="card-shine"></div>
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">相册</h3>
+                        <p class="card-desc">定格我们难忘的回忆</p>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="nav-card glass-card" onclick="showSection('anniversary')">
+                        <div class="card-shine"></div>
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+                            </svg>
+                        </div>
+                        <h3 class="card-title">纪念</h3>
+                        <p class="card-desc">铭记我们宝贵的瞬间</p>
+                        <div class="card-arrow">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 心的呼唤入口（表白前显示，表白后隐藏） -->
+                <div class="confession-card-container" id="journeyCard">
+                    <button class="confession-card glass-card" onclick="showSection('journey')">
+                            <span class="confession-card-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                </svg>
+                            </span>
+                        <span class="confession-card-content">
+                                <span class="confession-card-title">心的呼唤</span>
+                                <span class="confession-card-desc">汹涌的情感与激荡的话语，以及我的真心</span>
+                            </span>
+                        <span class="confession-card-arrow">
+                                <svg viewBox="0 0 24 24"><path
+                                        d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                            </span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 板块视图 -->
+            <div class="section-view" id="sectionView">
+                <!-- 日记 -->
+                <div class="content-section" id="storySection">
+                    <div class="section-card glass-card">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <svg class="section-icon" viewBox="0 0 24 24">
+                                    <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/>
+                                </svg>
+                                日记
+                            </h2>
+                            <button class="edit-btn" onclick="toggleEditMode('story')">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                </svg>
+                                编辑
+                            </button>
+                        </div>
+                        <div class="timeline" id="storyTimeline"></div>
+                        <button class="load-more-btn" id="storyLoadMore" onclick="loadMoreStory()"
+                                style="display:none;">加载更多
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 相册 -->
+                <div class="content-section" id="memorySection">
+                    <div class="section-card glass-card">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <svg class="section-icon" viewBox="0 0 24 24">
+                                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                                </svg>
+                                相册
+                            </h2>
+                            <button class="edit-btn" onclick="toggleEditMode('memory')">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                </svg>
+                                编辑
+                            </button>
+                        </div>
+                        <div class="photo-gallery" id="memoryGallery"></div>
+                        <button class="load-more-btn" id="memoryLoadMore" onclick="loadMoreMemory()"
+                                style="display:none;">加载更多
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 心的呼唤 -->
+                <div class="content-section" id="journeySection">
+                    <div class="section-card glass-card">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <svg class="section-icon" viewBox="0 0 24 24">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                </svg>
+                                心的呼唤
+                            </h2>
+                            <button class="edit-btn" onclick="toggleEditMode('journey')">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                </svg>
+                                编辑
+                            </button>
+                        </div>
+                        <div class="journey-content">
+                            <div class="journey-text" id="journeyText"></div>
+                        </div>
+                        <div class="confession-entrance" id="confessionEntrance">
+                            <div class="entrance-line"></div>
+                            <p class="entrance-hint">准备好接收我的心意了吗？</p>
+                            <button class="primary-btn confession-btn glow-effect" onclick="showConfessionModal()">
+                                <svg class="btn-heart-svg" viewBox="0 0 24 24">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                </svg>
+                                <span>点击这里</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 纪念 - 纪念日轮播 -->
+                <div class="content-section" id="anniversarySection">
+                    <div class="section-card glass-card">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <svg class="section-icon" viewBox="0 0 24 24">
+                                    <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+                                </svg>
+                                纪念
+                            </h2>
+                            <button class="edit-btn" onclick="toggleEditMode('anniversary')">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                                </svg>
+                                编辑
+                            </button>
+                        </div>
+                        <div class="anniversary-carousel">
+                            <button class="carousel-btn prev" onclick="prevAnniversary()">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                </svg>
+                            </button>
+                            <div class="carousel-container">
+                                <div class="carousel-track" id="anniversaryTrack"></div>
+                            </div>
+                            <button class="carousel-btn next" onclick="nextAnniversary()">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="carousel-dots" id="anniversaryDots"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 阶段3：完成页面 -->
+    <section class="stage" id="stage3">
+        <div class="stage-content">
+            <div class="final-box">
+                <div class="celebration-container">
+                    <div class="celebration-ring"></div>
+                    <div class="celebration-ring delay"></div>
+                    <svg class="celebration-heart" viewBox="0 0 32 32">
+                        <path d="M16 28.72a3 3 0 0 1-2.13-.88L3.57 17.54a8.23 8.23 0 0 1-2.07-8.67 8 8 0 0 1 6.72-5.3 7.49 7.49 0 0 1 5.66 1.58L16 6.86l2.12-1.71a7.49 7.49 0 0 1 5.66-1.58 8 8 0 0 1 6.72 5.3 8.23 8.23 0 0 1-2.07 8.67l-10.3 10.3a3 3 0 0 1-2.13.88z"/>
+                    </svg>
+                </div>
+
+                <h1 class="final-title gradient-text">在此献上</h1>
+                <p class="final-subtitle">我不变的爱与忠诚</p>
+
+                <!-- 主纪念日显示 -->
+                <div class="main-anniversary-display" id="mainAnniversaryDisplay">
+                    <div class="anniversary-highlight">
+                        <span class="highlight-number" id="mainDayCount">0</span>
+                        <span class="highlight-label">天</span>
+                    </div>
+                    <p class="anniversary-text" id="mainAnniversaryText">我们在一起</p>
+                </div>
+
+                <div class="final-quote glass-card">
+                    <p class="quote-text">I love you,<br>Not only for what you are,<br>But for what I am<br>When I am
+                        with you.</p>
+                </div>
+
+                <button class="primary-btn" onclick="goToStage(2)">
+                    <svg class="btn-icon-svg" viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                    <span>回到我们的回忆</span>
+                </button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- 表白弹窗 -->
+<div class="modal" id="confessionModal">
+    <div class="modal-overlay" onclick="closeConfessionModal()"></div>
+    <div class="modal-content glass-card">
+        <div class="modal-heart-container">
+            <svg class="modal-heart-svg" viewBox="0 0 32 32">
+                <path d="M16 28.72a3 3 0 0 1-2.13-.88L3.57 17.54a8.23 8.23 0 0 1-2.07-8.67 8 8 0 0 1 6.72-5.3 7.49 7.49 0 0 1 5.66 1.58L16 6.86l2.12-1.71a7.49 7.49 0 0 1 5.66-1.58 8 8 0 0 1 6.72 5.3 8.23 8.23 0 0 1-2.07 8.67l-10.3 10.3a3 3 0 0 1-2.13.88z"/>
+            </svg>
+        </div>
+        <h2 class="modal-question">你愿意和我在一起吗？</h2>
+        <p class="modal-subtext">（认真的哦～）</p>
+        <div class="modal-buttons">
+            <button class="yes-btn glow-effect" onclick="handleYes()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                我愿意
+            </button>
+            <button class="no-btn" id="noBtn" onclick="handleNo()">再想想...</button>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑器弹窗 -->
+<div class="modal" id="editorModal">
+    <div class="modal-overlay" onclick="closeEditor()"></div>
+    <div class="modal-content glass-card editor-modal">
+        <div class="modal-header">
+            <h2 class="modal-title" id="editorTitle">编辑内容</h2>
+            <button class="close-btn" onclick="closeEditor()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </button>
+        </div>
+        <div class="modal-body" id="editorBody"></div>
+        <div class="modal-footer">
+            <button class="secondary-btn" onclick="closeEditor()">取消</button>
+            <button class="primary-btn" onclick="saveContent()">保存</button>
+        </div>
+    </div>
+</div>
+
+<!-- 设置弹窗 -->
+<div class="modal" id="settingsModal">
+    <div class="modal-overlay" onclick="closeSettings()"></div>
+    <div class="modal-content glass-card settings-modal">
+        <div class="modal-header">
+            <h2 class="modal-title">设置</h2>
+            <button class="close-btn" onclick="closeSettings()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </button>
+        </div>
+        <div class="settings-body">
+            <!-- 数据管理 -->
+            <div class="settings-section">
+                <h3 class="settings-title">数据管理</h3>
+                <div class="settings-actions">
+                    <button class="action-btn" onclick="exportAllData()">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6 .67l2.59-2.58L17 11.5l-5 5-5-5 1.41-1.41L11 12.67V3h2v9.67z"/>
+                        </svg>
+                        导出数据
+                    </button>
+                    <button class="action-btn" onclick="importAllData()">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 12v7H5v-7H3v7c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2zm-6-.67l2.59 2.58L17 12.5l-5-5-5 5 1.41 1.41L11 11.33V21h2v-9.67z"/>
+                        </svg>
+                        导入数据
+                    </button>
+                </div>
+            </div>
+
+            <!-- 开发者选项 -->
+            <div class="settings-section dev-only" id="devSettings">
+                <h3 class="settings-title">开发者选项</h3>
+                <div class="settings-actions">
+                    <button class="action-btn warning" onclick="resetConfessionOnly()">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                        </svg>
+                        重置表白状态
+                    </button>
+                    <button class="action-btn danger" onclick="resetAllData()">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                        </svg>
+                        重置所有数据
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="secondary-btn" onclick="closeSettings()">关闭</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast容器 -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- JS引入 -->
+<script src="js/config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/effects.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+    // 紧急加载修复
+    (function () {
+        const loading = document.getElementById('loadingScreen');
+        let hidden = false;
+
+        function hide() {
+            if (hidden || !loading) return;
+            hidden = true;
+            loading.classList.add('hidden');
+        }
+
+        if (document.readyState !== 'loading') setTimeout(hide, 500);
+        document.addEventListener('DOMContentLoaded', () => setTimeout(hide, 500));
+        window.addEventListener('load', () => setTimeout(hide, 300));
+        setTimeout(hide, 4000);
+        window.forceHideLoading = hide;
+    })();
+</script>
+</body>
+</html>
